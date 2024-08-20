@@ -22,25 +22,29 @@ const pgPool = new Pool({
 });
 
 const { AppConfigurationClient } = require("@azure/app-configuration");
+const { DefaultAzureCredential } = require("@azure/identity");
 
-const connectionString = process.env.APP_CONFIG_CONNECTION_STRING;
+const appConfigEndpoint = "https://vystar-poc-appconfig.azconfig.io";  // e.g., https://<your-app-config-name>.azconfig.io
 
-const client = new AppConfigurationClient(connectionString);
+const credential = new DefaultAzureCredential();
+const client = new AppConfigurationClient(appConfigEndpoint, credential);
 
-async function loadConfiguration() {
+async function fetchConfiguration() {
   try {
     const setting = await client.getConfigurationSetting({ key: "app1_sentinel" });
 
-    // Set the configuration value as an environment variable
-    process.env.app1_sentinel = setting.value;
+    // Use the configuration value in your application
+    console.log(`Fetched configuration: ${setting.value}`);
 
-    console.log(`Configuration value set: ${process.env.Yapp1_sentinel}`);
-  } catch (err) {
-    console.error("Error fetching configuration:", err);
+    // Optionally, set it as an environment variable
+    process.env.YOUR_ENV_VARIABLE = setting.value;
+  } catch (error) {
+    console.error("Error fetching configuration:", error);
   }
 }
 
-loadConfiguration();
+fetchConfiguration();
+
 
 // Redis configuration
 const redisClient = redis.createClient({
