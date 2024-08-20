@@ -7,7 +7,8 @@
       "pg": "^8.6.0",
       "redis": "^3.1.2",
       "ejs": "^3.1.6",
-      "multer": "^1.4.2"
+      "multer": "^1.4.2",
+      "@azure/app-configuration": "^1.0.0"
     }
   }
   
