@@ -21,6 +21,27 @@ const pgPool = new Pool({
   }
 });
 
+const { AppConfigurationClient } = require("@azure/app-configuration");
+
+const connectionString = process.env.APP_CONFIG_CONNECTION_STRING;
+
+const client = new AppConfigurationClient(connectionString);
+
+async function loadConfiguration() {
+  try {
+    const setting = await client.getConfigurationSetting({ key: "app1_sentinel" });
+
+    // Set the configuration value as an environment variable
+    process.env.app1_sentinel = setting.value;
+
+    console.log(`Configuration value set: ${process.env.Yapp1_sentinel}`);
+  } catch (err) {
+    console.error("Error fetching configuration:", err);
+  }
+}
+
+loadConfiguration();
+
 // Redis configuration
 const redisClient = redis.createClient({
   host: process.env.REDIS_HOST || 'vystar.redis.cache.windows.net',
